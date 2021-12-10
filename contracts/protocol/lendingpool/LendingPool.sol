@@ -101,12 +101,27 @@ contract LendingPool is VersionedInitializable, ILendingPool, LendingPoolStorage
    * @param referralCode Code used to register the integrator originating the operation, for potential rewards.
    *   0 if the action is executed directly by the user, without any middle-man
    **/
+  /**
+   * @dev 将“amount”的底层资产存入协议的资金池，获得上层的aTokens作为回报。
+   * - 比如，用户存入100 USDC，得到100 aUSDC的回报
+   * @param asset 要存入的底层资产的地址
+   * @param amount 存款金额
+   * @param onBehalfOf 接收aTokens的地址，如果用户希望在自己的钱包上接收aTokens，则与msg.sender相同，如果aTokens的受益人是另一个钱包，则为不同的地址。
+   *   总之，存款地址和受益人地址可以不同，就和买保险一样，可以我出钱，给我家人买保险，受益人是我家人。
+   * @param referralCode 用来注册发起操作的集成者(integrator)的代码，作为潜在的奖励。如果操作由用户直接执行，没有任何中间人，则为0。
+   *   意思就是AAVE协议可以直接被EOA（外部账户）的用户直接调用，也可以由其他DeFi产品的智能合约调用，如果是其他DeFi产品的智能合约调用，可以传入一个代码，
+   *   用于表示这个DeFi产品，将来有可能AAVE会向这个DeFi产品发放潜在的奖励，这主要是处于AAVE扩展自己生态的目的，用自己协议的外部产品当然越多越好。
+   **/   
   function deposit(
     address asset,
     uint256 amount,
     address onBehalfOf,
     uint16 referralCode
   ) external override whenNotPaused {
+    // _reserves继承自LendingPoolStorage：mapping(address => DataTypes.ReserveData) internal _reserves;
+    // 用于表示底层资产地址和资金池数据的映射，一种底层资产地址对应一个AAVE协议的资金池
+    // DataTypes.ReserveData是一个struct数据结构，表示资金池数据，定义了资金池配置、流动性指数、可变借款指数、当前流动性供应率、当前可变利率借款率、当前稳定利率借款率、
+    // 上次更新时间、aToken地址、稳定利率债务token地址、可变利率债务token地址、利率策略的地址、资金池的id（表示在活跃资金池列表中的位置）  
     DataTypes.ReserveData storage reserve = _reserves[asset];
 
     ValidationLogic.validateDeposit(reserve, amount);
