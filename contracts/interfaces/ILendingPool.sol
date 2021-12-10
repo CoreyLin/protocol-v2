@@ -79,6 +79,11 @@ interface ILendingPool {
    * @param reserve The address of the underlying asset of the reserve
    * @param user The address of the user enabling the usage as collateral
    **/
+  /**
+   * @dev Emitted on setUserUseReserveAsCollateral()
+   * @param reserve 协议资金池对应的底层资产的地址
+   * @param user 允许将其用作抵押品的用户地址
+   **/   
   event ReserveUsedAsCollateralEnabled(address indexed reserve, address indexed user);
 
   /**
