@@ -269,6 +269,11 @@ library ReserveConfiguration {
    * @param self The reserve configuration
    * @return The state flags representing active, frozen, borrowing enabled, stableRateBorrowing enabled
    **/
+  /**
+   * @dev 获取资金池的配置flags
+   * @param self 资金池配置
+   * @return 四个状态标志：激活，冻结，启用借款，启用固定利率借款
+   **/
   function getFlags(DataTypes.ReserveConfigurationMap storage self)
     internal
     view
