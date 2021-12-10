@@ -7,7 +7,7 @@ import {DataTypes} from '../types/DataTypes.sol';
 /**
  * @title UserConfiguration library
  * @author Aave
- * @notice Implements the bitmap logic to handle the user configuration
+ * @notice Implements the bitmap logic to handle the user configuration 实现bitmap逻辑来处理用户配置
  */
 library UserConfiguration {
   uint256 internal constant BORROWING_MASK =
@@ -41,6 +41,12 @@ library UserConfiguration {
    * @param reserveIndex The index of the reserve in the bitmap
    * @param usingAsCollateral True if the user is usin the reserve as collateral, false otherwise
    **/
+  /**
+   * @dev 设置用户是否使用reserveIndex标识的资金作为抵押品
+   * @param self 用户配置对象
+   * @param reserveIndex bitmap中资金池的索引
+   * @param usingAsCollateral 如果用户将资金用作抵押品，则为真，否则为假
+   **/   
   function setUsingAsCollateral(
     DataTypes.UserConfigurationMap storage self,
     uint256 reserveIndex,
