@@ -124,23 +124,35 @@ contract LendingPool is VersionedInitializable, ILendingPool, LendingPoolStorage
     // 上次更新时间、aToken地址、稳定利率债务token地址、可变利率债务token地址、利率策略的地址、资金池的id（表示在活跃资金池列表中的位置）  
     DataTypes.ReserveData storage reserve = _reserves[asset];
 
+    // 验证一个存款操作。三个验证点：
+    // 1.存款金额不能为0
+    // 2.资金池的状态必须是激活的
+    // 3.资金池不能是被冻结状态的
     ValidationLogic.validateDeposit(reserve, amount);
 
+    // 资金池对应的aToken地址
     address aToken = reserve.aTokenAddress;
 
+    // 更新流动性累积指数和可变利率借款指数
     reserve.updateState();
+    // 更新资金当前稳定借款利率、当前可变借款利率和当前流动性率
     reserve.updateInterestRates(asset, aToken, amount, 0);
 
+    // 转移底层资产，从msg.sender转移到资金池对应的aToken地址，转移金额为amount。即底层资产的所有权从msg.sender转移到了aToken地址
     IERC20(asset).safeTransferFrom(msg.sender, aToken, amount);
 
+    // 给受益人铸造amount数量的aTokens。reserve.liquidityIndex为资金池流动性指数。
+    // 如果用户之前的余额为0，则返回true，代表第一次存款；否则返回false
     bool isFirstDeposit = IAToken(aToken).mint(onBehalfOf, amount, reserve.liquidityIndex);
 
     if (isFirstDeposit) {
+      // _usersConfig定义在LendingPoolStorage中，mapping(address => DataTypes.UserConfigurationMap) internal _usersConfig;
+      // 找出受益人的UserConfigurationMap，是一个struct，包含一个uint256[2] data，然后设置用户使用reserveIndex标识的资金作为抵押品
       _usersConfig[onBehalfOf].setUsingAsCollateral(reserve.id, true);
-      emit ReserveUsedAsCollateralEnabled(asset, onBehalfOf);
+      emit ReserveUsedAsCollateralEnabled(asset, onBehalfOf); // 触发启用抵押事件，底层资产地址、受益人地址
     }
 
-    emit Deposit(asset, msg.sender, onBehalfOf, amount, referralCode);
+    emit Deposit(asset, msg.sender, onBehalfOf, amount, referralCode); // 触发存款事件，底层资产地址、调用者地址、受益人地址、存款金额、推荐号
   }
 
   /**
