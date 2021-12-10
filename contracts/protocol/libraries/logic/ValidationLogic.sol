@@ -19,7 +19,7 @@ import {DataTypes} from '../types/DataTypes.sol';
 /**
  * @title ReserveLogic library
  * @author Aave
- * @notice Implements functions to validate the different actions of the protocol
+ * @notice Implements functions to validate the different actions of the protocol 实现了验证协议的不同操作的函数
  */
 library ValidationLogic {
   using ReserveLogic for DataTypes.ReserveData;
@@ -38,12 +38,18 @@ library ValidationLogic {
    * @param reserve The reserve object on which the user is depositing
    * @param amount The amount to be deposited
    */
+  /**
+   * @dev 验证一个存款操作
+   * @param reserve 用户进行存款的资金池对象
+   * @param amount 存款金额
+   */   
   function validateDeposit(DataTypes.ReserveData storage reserve, uint256 amount) external view {
+    // 获取资金池的配置flags，返回四个状态标志：激活，冻结，启用借款，启用固定利率借款
     (bool isActive, bool isFrozen, , ) = reserve.configuration.getFlags();
 
-    require(amount != 0, Errors.VL_INVALID_AMOUNT);
-    require(isActive, Errors.VL_NO_ACTIVE_RESERVE);
-    require(!isFrozen, Errors.VL_RESERVE_FROZEN);
+    require(amount != 0, Errors.VL_INVALID_AMOUNT); //存款金额不能为0，否则抛出Errors.VL_INVALID_AMOUNT错误
+    require(isActive, Errors.VL_NO_ACTIVE_RESERVE); //资金池的状态必须是active的
+    require(!isFrozen, Errors.VL_RESERVE_FROZEN); //资金池不能是被冻结状态的
   }
 
   /**
