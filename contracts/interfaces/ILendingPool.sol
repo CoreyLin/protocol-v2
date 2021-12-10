@@ -7,12 +7,12 @@ import {DataTypes} from '../protocol/libraries/types/DataTypes.sol';
 
 interface ILendingPool {
   /**
-   * @dev Emitted on deposit()
-   * @param reserve The address of the underlying asset of the reserve
-   * @param user The address initiating the deposit
-   * @param onBehalfOf The beneficiary of the deposit, receiving the aTokens
-   * @param amount The amount deposited
-   * @param referral The referral code used
+   * @dev Emitted on deposit() 存款时触发该事件
+   * @param reserve The address of the underlying asset of the reserve 底层资产的地址，把这个底层资产存到AAVE协议中
+   * @param user The address initiating the deposit 发起存款的用户地址
+   * @param onBehalfOf The beneficiary of the deposit, receiving the aTokens 收到aTokens的存款受益人
+   * @param amount The amount deposited 存款的金额
+   * @param referral The referral code used 推荐程序的推荐代码。使用0表示不推荐。
    **/
   event Deposit(
     address indexed reserve,
@@ -23,11 +23,11 @@ interface ILendingPool {
   );
 
   /**
-   * @dev Emitted on withdraw()
-   * @param reserve The address of the underlyng asset being withdrawn
-   * @param user The address initiating the withdrawal, owner of aTokens
-   * @param to Address that will receive the underlying
-   * @param amount The amount to be withdrawn
+   * @dev Emitted on withdraw() 取款时触发该事件
+   * @param reserve The address of the underlyng asset being withdrawn 要取款的底层资产的地址
+   * @param user The address initiating the withdrawal, owner of aTokens 发起取款的用户地址，aTokens的拥有者
+   * @param to Address that will receive the underlying 接收资金的地址，接收资金的地址和发起取款的地址可以不同
+   * @param amount The amount to be withdrawn 取款的金额
    **/
   event Withdraw(address indexed reserve, address indexed user, address indexed to, uint256 amount);
 
