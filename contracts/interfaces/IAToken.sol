@@ -22,6 +22,13 @@ interface IAToken is IERC20, IScaledBalanceToken, IInitializableAToken {
    * @param index The new liquidity index of the reserve
    * @return `true` if the the previous balance of the user was 0
    */
+  /**
+   * @dev 给用户铸造amount数量的aTokens
+   * @param user 接收铸造代币的地址
+   * @param amount 铸造代币的数量
+   * @param index 新的资金池流动性指数
+   * @return 如果用户之前的余额为0，则返回true
+   */   
   function mint(
     address user,
     uint256 amount,
