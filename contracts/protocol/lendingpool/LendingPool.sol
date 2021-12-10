@@ -147,7 +147,7 @@ contract LendingPool is VersionedInitializable, ILendingPool, LendingPoolStorage
 
     if (isFirstDeposit) {
       // _usersConfig定义在LendingPoolStorage中，mapping(address => DataTypes.UserConfigurationMap) internal _usersConfig;
-      // 找出受益人的UserConfigurationMap，是一个struct，包含一个uint256[2] data，然后设置用户使用reserveIndex标识的资金作为抵押品
+      // 找出受益人的UserConfigurationMap，是一个struct，包含一个uint256[2] data，然后设置受益人使用reserveIndex标识的资金作为抵押品
       _usersConfig[onBehalfOf].setUsingAsCollateral(reserve.id, true);
       emit ReserveUsedAsCollateralEnabled(asset, onBehalfOf); // 触发启用抵押事件，底层资产地址、受益人地址
     }
